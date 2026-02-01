@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0">
+<style>
+html,body,#map{height:100%;margin:0;padding:0;background:#000}
+.controls{
+position:absolute;top:20px;left:20px;z-index:5;
+background:#000;padding:10px;border-radius:8px
+}
+button{
+display:block;margin:5px;padding:8px 12px;
+background:#D4AF37;border:none;font-weight:bold;cursor:pointer
+}
+</style>
+</head>
+<body>
+
+<div class="controls">
+<button onclick="showPlaces('schools')">Schools</button>
+<button onclick="showPlaces('hospitals')">Hospitals</button>
+<button onclick="showPlaces('entertainment')">Entertainment</button>
+<button onclick="showPlaces('malls')">Malls</button>
+</div>
+
+<div id="map"></div>
+
+<script>
+let map, directionsService, directionsRenderer;
+
+const projectCenter = { lat:17.2403, lng:78.4294 };
+
+function initMap(){
+ map = new google.maps.Map(document.getElementById("map"),{
+  zoom:14,
+  center:projectCenter,
+  mapTypeId:'satellite'
+ });
+
+ directionsService = new google.maps.DirectionsService();
+ directionsRenderer = new google.maps.DirectionsRenderer({suppressMarkers:true});
+ directionsRenderer.setMap(map);
+
+ const bounds = {
+  north:17.2435,
+  south:17.2370,
+  east:78.4335,
+  west:78.4250,
+ };
+
+ const overlay = new google.maps.GroundOverlay("siteplan.jpg", bounds,{opacity:0.6});
+ overlay.setMap(map);
+}
+
+function showPlaces(type){
+ alert(type + " will be shown here in next step");
+}
+
+window.initMap = initMap;
+</script>
+
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEYAIzaSyA7MMVo2W-7e5E3xHNNcBh_y6SfQ7_c1cw&callback=initMap">
+</script>
+
+</body>
+</html>
