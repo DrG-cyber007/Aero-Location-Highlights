@@ -1,57 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Aero Villas Map</title>
-  <meta charset="utf-8" />
-  <style>
-    html, body, #map { height:100%; margin:0; padding:0; }
-    .controls{
-      position:absolute; top:20px; left:20px; z-index:5;
-      background:black; padding:10px; border-radius:8px;
-    }
-    button{
-      display:block; margin:5px; padding:8px 12px;
-      background:#D4AF37; border:none; font-weight:bold;
-    }
-  </style>
+<meta charset="utf-8" />
+<title>Aero Villas Location Map</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+html, body, #map { height:100%; margin:0; }
+.controls{
+ position:absolute; top:20px; left:20px; z-index:1000;
+ background:black; padding:10px; border-radius:8px;
+}
+button{
+ display:block; margin:5px; padding:8px 12px;
+ background:#D4AF37; border:none; font-weight:bold; cursor:pointer;
+}
+</style>
 </head>
 <body>
 
 <div class="controls">
-  <button>Schools</button>
-  <button>Hospitals</button>
-  <button>Entertainment</button>
-  <button>Malls</button>
+<button onclick="show('schools')">Schools</button>
+<button onclick="show('hospitals')">Hospitals</button>
+<button onclick="show('entertainment')">Entertainment</button>
+<button onclick="show('malls')">Malls</button>
 </div>
 
 <div id="map"></div>
 
 <script>
-function initMap() {
-  const center = { lat:17.2403, lng:78.4294 };
+const map = L.map('map').setView([17.2403,78.4294], 15);
 
-  const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 15,
-    center: center,
-    mapTypeId: "satellite",
-  });
+// OpenStreetMap tiles (no API key)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+}).addTo(map);
 
-  const bounds = {
-    north:17.2435,
-    south:17.2370,
-    east:78.4335,
-    west:78.4250,
-  };
+// Overlay your layout image
+const bounds = [[17.2370,78.4250],[17.2435,78.4335]];
+L.imageOverlay('siteplan.jpg', bounds, {opacity:0.7}).addTo(map);
 
-  new google.maps.GroundOverlay(
-    "https://drg-cyber007.github.io/Aero-Location-Highlights/siteplan.jpg",
-    bounds
-  ).setMap(map);
+let markers = [];
+
+const places = {
+ schools: [
+  ["DPS Raviryal",17.240,78.410],
+  ["Glendale Academy",17.230,78.420]
+ ],
+ hospitals: [
+  ["Sunrise Hospital",17.250,78.435]
+ ],
+ entertainment: [
+  ["Wonderla",17.220,78.500]
+ ],
+ malls: [
+  ["Mantra Mall",17.320,78.480]
+ ]
+};
+
+function show(type){
+ markers.forEach(m => map.removeLayer(m));
+ markers=[];
+ places[type].forEach(p=>{
+   let m=L.marker([p[1],p[2]]).addTo(map).bindPopup(p[0]);
+   markers.push(m);
+ });
 }
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
-
 </body>
 </html>
-
